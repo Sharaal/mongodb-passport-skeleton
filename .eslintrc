@@ -1,0 +1,8 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "global-require": "off",
+    "import/newline-after-import": "off",
+    "no-underscore-dangle": "off"
+  }
+}
