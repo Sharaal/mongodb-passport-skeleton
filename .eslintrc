@@ -3,6 +3,7 @@
   "rules": {
     "global-require": "off",
     "import/newline-after-import": "off",
+    "new-cap": "off",
     "no-underscore-dangle": "off"
   }
 }

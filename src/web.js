@@ -9,9 +9,9 @@
 
   const app = require('express')();
 
-  app.use(require('./routers/authenticate')({ db, ensureLoggedOut }));
-  app.use(require('./routers/home')());
-  app.use(require('./routers/profile')({ ensureLoggedIn }));
+  app.use(await require('./routers/authenticate')({ db, ensureLoggedOut }));
+  app.use(await require('./routers/home')());
+  app.use(await require('./routers/profile')({ db, ensureLoggedIn }));
 
   app.listen(process.env.PORT);
 })();

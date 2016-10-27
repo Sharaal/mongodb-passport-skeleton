@@ -1,6 +1,6 @@
 module.exports = async ({ db, ensureLoggedOut }) => {
   const users = db.collection('users');
-  users.createIndex({ username: 1 });
+  await users.createIndex({ username: 1 });
 
   const passport = require('passport');
 
