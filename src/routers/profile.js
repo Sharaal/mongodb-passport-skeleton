@@ -1,8 +1,5 @@
-const express = require('express');
-
 module.exports = ({ ensureLoggedIn }) => {
-  /* eslint new-cap: "off" */
-  const router = express.Router();
+  const router = require('express').Router();
 
   router.get('/profile',
     ensureLoggedIn,

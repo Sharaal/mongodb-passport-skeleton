@@ -1,8 +1,5 @@
-const express = require('express');
-
 module.exports = () => {
-  /* eslint new-cap: "off" */
-  const router = express.Router();
+  const router = require('express').Router();
 
   router.get('/',
     (req, res) => {

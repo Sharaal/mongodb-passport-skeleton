@@ -1,8 +1,8 @@
-const express = require('express');
-const passport = require('passport');
-
-module.exports = ({ db, ensureLoggedOut }) => {
+module.exports = async ({ db, ensureLoggedOut }) => {
   const users = db.collection('users');
+  users.createIndex({ username: 1 });
+
+  const passport = require('passport');
 
   passport.deserializeUser(
     async (_id, cb) => {
@@ -27,8 +27,7 @@ module.exports = ({ db, ensureLoggedOut }) => {
     })
   );
 
-  /* eslint new-cap: "off" */
-  const router = express.Router();
+  const router = require('express').Router();
 
   router.use(require('body-parser').urlencoded({ extended: true }));
   router.use(require('cookie-parser')());
