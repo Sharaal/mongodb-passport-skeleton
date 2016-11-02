@@ -2,9 +2,7 @@ const ObjectId = require('mongodb').ObjectId;
 
 module.exports = async ({ db, ensureLoggedOut }) => {
   const authentications = db.collection('authentications');
-  await authentications.createIndex({ name: 1 }, { unique: true, sparse: true });
   const users = db.collection('users');
-  await users.createIndex({ name: 1 }, { unique: true });
 
   const passport = require('passport');
 
