@@ -13,14 +13,14 @@ module.exports = async ({ db, ensureLoggedIn }) => {
   router.get('/profile/:name',
     async (req, res) => {
       const user = await users.findOne({ name: req.params.name });
-      if (req.accepts('html')) {
-        if (user) {
+      if (user) {
+        if (req.accepts('html')) {
           res.render('profile.ejs', { user });
         } else {
-          res.sendStatus(404);
+          res.send(user);
         }
       } else {
-        res.send(user);
+        res.sendStatus(404);
       }
     }
   );
