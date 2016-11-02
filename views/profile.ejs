@@ -1,7 +1,7 @@
 <p>
 ID: <%= user._id %><br/>
-Username: <%= user.username %><br/>
-Nickname: <%= user.nickname %><br/>
-Email: <%= user.email %><br/>
+Name: <%= user.name %><br/>
 </p>
+<% if (user) { %>
 <a href="/logout">Logout</a>
+<% } %>

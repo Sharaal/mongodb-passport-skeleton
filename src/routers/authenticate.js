@@ -1,12 +1,17 @@
+const ObjectId = require('mongodb').ObjectId;
+
 module.exports = async ({ db, ensureLoggedOut }) => {
+  const authentications = db.collection('authentications');
+  await authentications.createIndex({ name: 1 }, { unique: true, sparse: true });
   const users = db.collection('users');
-  await users.createIndex({ username: 1 });
+  await users.createIndex({ name: 1 }, { unique: true });
 
   const passport = require('passport');
 
   passport.deserializeUser(
     async (_id, cb) => {
-      cb(null, await users.findOne({ _id }));
+      const user = await users.findOne({ _id: new ObjectId(_id) });
+      cb(null, user);
     }
   );
 
@@ -17,9 +22,10 @@ module.exports = async ({ db, ensureLoggedOut }) => {
   );
 
   passport.use(new (require('passport-local').Strategy)(
-    async (username, password, cb) => {
-      const user = await users.findOne({ username });
-      if (user && user.password === password) {
+    async (name, password, cb) => {
+      const authentication = await authentications.findOne({ strategy: 'local', name });
+      if (authentication && authentication.password === password) {
+        const user = await users.findOne({ _id: new ObjectId(authentication.userId) });
         cb(null, user);
       } else {
         cb(null, null);
@@ -34,6 +40,21 @@ module.exports = async ({ db, ensureLoggedOut }) => {
   router.use(require('express-session')({ resave: false, saveUninitialized: false, secret: 'secret' }));
   router.use(passport.initialize());
   router.use(passport.session());
+
+  router.route('/register')
+    .get(
+      ensureLoggedOut,
+      (req, res) => {
+        res.render('register.ejs');
+      })
+    .post(
+      async (req, res) => {
+        const result = await users.insertOne({ name: req.body.name });
+        const userId = result.insertedId;
+        await authentications.insertOne({ strategy: 'local', name: req.body.name, password: req.body.password, userId });
+        res.redirect('/login');
+      }
+    );
 
   router.route('/login')
     .get(
