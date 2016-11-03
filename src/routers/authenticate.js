@@ -5,7 +5,7 @@ module.exports = async ({ db, ensureLoggedOut }) => {
   const users = db.collection('users');
 
   const passport = require('passport');
-  const bcrypt = require('../bcrypt');
+  const dbcrypt = require('dbcrypt');
 
   passport.deserializeUser(
     async (_id, cb) => {
@@ -23,7 +23,7 @@ module.exports = async ({ db, ensureLoggedOut }) => {
   passport.use(new (require('passport-local').Strategy)(
     async (name, password, cb) => {
       const authentication = await authentications.findOne({ strategy: 'local', name });
-      if (authentication && await bcrypt.verify(password, authentication.passwordHash)) {
+      if (authentication && await dbcrypt.compare(password, authentication.passwordHash)) {
         const user = await users.findOne({ _id: new ObjectId(authentication.userId) });
         cb(null, user);
       } else {
@@ -50,7 +50,7 @@ module.exports = async ({ db, ensureLoggedOut }) => {
       async (req, res) => {
         const result = await users.insertOne({ name: req.body.name });
         const userId = result.insertedId;
-        const passwordHash = await bcrypt.hash(req.body.password);
+        const passwordHash = await dbcrypt.hash(req.body.password);
         await authentications.insertOne({ strategy: 'local', name: req.body.name, passwordHash, userId });
         res.redirect('/login');
       }
