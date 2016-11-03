@@ -1,11 +1,10 @@
+const dbcrypt = require('dbcrypt');
 const ObjectId = require('mongodb').ObjectId;
+const passport = require('passport');
 
 module.exports = async ({ db, ensureLoggedOut }) => {
   const authentications = db.collection('authentications');
   const users = db.collection('users');
-
-  const passport = require('passport');
-  const dbcrypt = require('dbcrypt');
 
   passport.deserializeUser(
     async (_id, cb) => {
